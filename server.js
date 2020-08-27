@@ -4,7 +4,8 @@ bodyParser = require("body-parser");
 db = require("./db");
 port = process.env.NODE_PORT || 3000;
 
-const Task = require('./models/taskModel');
+const DomTask = require('./models/taskDom');
+const TaskModel = require('./models/taskModel');
 
 app.set("view engine", "ejs");
 
@@ -12,33 +13,55 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const cors = require('cors');
-app.use(cors({
-    origin: function (origin, callback) {
-        console.log('origin:', origin)
-        return callback(null, true);
-    }
-}))
-
-// app.use(function (req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("crossorigin", true);
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     next();
-// });
+app.use(cors());
 
 // Routes
 app.get("/", (req, res) => {
-    console.log('get');
-    res.status(200).send("ree");
+    console.log('res', res)
+    const domTasks = DomTask.find();
+    const tasksModels = DomTask.find();
+    res.json({ domTasks, tasksModels, cok: "ee" });
 });
 
-app.post("/add-task", async (req, res) => {
+app.post("/add-task-model", async (req, res) => {
     const { id, icon, color, form } = req.body;
-    const newTask = new Task({
+    const newTaskModel = new TaskModel({
         id, icon, color, form
     });
     try {
+        const result = await newTaskModel.save();
+        res.send(result);
+    } catch (err) {
+        res.send({ message: err.message });
+    };
+});
+
+app.post("/add-dom-task", async (req, res) => {
+    const { id, modelId, link, position } = req.body;
+    const newTask = new DomTask({id, modelId, link, position});
+    try {
         const result = await newTask.save();
+        res.send(result);
+    } catch (err) {
+        res.send({ message: err.message });
+    };
+});
+
+app.patch("/update-task", async (req, res) => {
+    const { id, icon, color, form, title, link, position  } = req.body;
+    const oldTask = DomTask.findOne({id});
+    const updatedTask = {
+        ...oldTask,
+        id: id ? id : oldTask.id,
+        icon: icon ? icon : oldTask.icon,
+        color: color ? color : oldTask.color,
+        form: form ? form : oldTask.form,
+        title: title ? title : oldTask.title,
+        link: link ? link : oldTask.link,
+        position: position ? position : oldTask.position,
+    };
+    try {
+        await DomTask.updateOne({ id }, updatedTask);
         res.send(result);
     } catch (err) {
         res.send({ message: err.message });

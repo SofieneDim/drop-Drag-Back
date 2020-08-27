@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 
-var TaskSchema = new mongoose.Schema({
+var TaskModelSchema = new mongoose.Schema({
     id: {
         type: String,
         required: true,
@@ -20,13 +20,6 @@ var TaskSchema = new mongoose.Schema({
         default: "circle",
         required: true,
     },
-    title: {
-        type: String,
-        minlength: 3,
-    },
-    link: {
-        type: String,
-    },
 });
 
-module.exports = mongoose.model("Task", TaskSchema);
+module.exports = mongoose.model("TaskModel", TaskModelSchema);

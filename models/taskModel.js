@@ -20,6 +20,11 @@ var TaskModelSchema = new mongoose.Schema({
         default: "circle",
         required: true,
     },
+    initialPosition: {
+        type: Object,
+        default: {},
+        required: true,
+    },
 });
 
 module.exports = mongoose.model("TaskModel", TaskModelSchema);

@@ -14,6 +14,11 @@ var TaskSchema = new mongoose.Schema({
         type: String,
         minlength: 3,
     },
+    initialPosition: {
+        type: Object,
+        default: {},
+        required: true,
+    },
     link: {
         type: String,
     },
